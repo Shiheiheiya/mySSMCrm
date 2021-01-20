@@ -1,13 +1,17 @@
 package com.myProject.service;
 
-import com.myProject.pojo.BaseDict;
 import com.myProject.pojo.Customer;
-import com.myProject.vo.Condition;
+import com.myProject.utils.Page;
+import com.myProject.vo.QueryVo;
 
 import java.util.List;
 
 public interface CustomerService {
-    List<Customer> getCustomerList();
+    Page getCustomerListByQueryVo(QueryVo vo);
 
-    List<Customer> getCustomerListByCondition(Condition condition);
+    Customer getCustomerById(Long id);
+
+    int customerUpdate(Customer customer);
+
+    int customerDeleteById(Long id);
 }

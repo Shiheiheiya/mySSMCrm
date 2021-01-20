@@ -1,18 +1,13 @@
 package com.myProject.vo;
 
-/**
- * 客户筛选条件
- * 客户名称
- * 客户来源
- * 所属行业
- * 客户级别
- */
-
-public class Condition {
+public class QueryVo {
     private String custName;
     private String custSource;
     private String custIndustry;
     private String custLevel;
+    private int page;
+    private int maxCount;
+
 
     public String getCustName() {
         return custName;
@@ -46,13 +41,19 @@ public class Condition {
         this.custLevel = custLevel;
     }
 
-    @Override
-    public String toString() {
-        return "condition{" +
-                "custName='" + custName + '\'' +
-                ", custSource='" + custSource + '\'' +
-                ", custIndustry='" + custIndustry + '\'' +
-                ", custLevel='" + custLevel + '\'' +
-                '}';
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getMaxCount() {
+        return maxCount;
+    }
+
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
     }
 }

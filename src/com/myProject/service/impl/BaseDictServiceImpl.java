@@ -12,9 +12,8 @@ import java.util.List;
 public class BaseDictServiceImpl implements BaseDictService {
     @Autowired
     BaseDictMapper baseDictMapper;
-
     /**
-     * 根据type_id 获取所述类型的类别信息
+     * 根据类别代码获取字典数据
      * @param dictTypeCode
      * @return
      */

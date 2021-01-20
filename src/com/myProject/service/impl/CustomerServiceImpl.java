@@ -1,11 +1,12 @@
 package com.myProject.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.myProject.mapper.CustomerMapper;
-import com.myProject.pojo.BaseDict;
 import com.myProject.pojo.Customer;
 import com.myProject.pojo.CustomerExample;
 import com.myProject.service.CustomerService;
-import com.myProject.vo.Condition;
+import com.myProject.utils.Page;
+import com.myProject.vo.QueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,35 +16,70 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     CustomerMapper customerMapper;
-
     /**
-     * 获取所有用户信息
-     * @return 用户列表
-     */
-    @Override
-    public List<Customer> getCustomerList() {
-        CustomerExample customerExample = new CustomerExample();
-        return customerMapper.selectByExample(customerExample);
-    }
-
-    /**
-     * 根据condition相应字段筛选用户信息
-     * @param condition
+     * 根据查询条件获取数据
+     * @param vo
      * @return
      */
     @Override
-    public List<Customer> getCustomerListByCondition(Condition condition) {
+    public Page getCustomerListByQueryVo(QueryVo vo) {
+        Page<Customer> page = new Page<>();
         CustomerExample customerExample = new CustomerExample();
         CustomerExample.Criteria criteria = customerExample.createCriteria();
-        if(condition.getCustSource() != null && condition.getCustSource() != ""){
-            criteria.andCustSourceEqualTo(condition.getCustSource());
+        if(vo != null){
+            if(vo.getPage() > 0){
+                page.setPage(vo.getPage());
+            }
+            vo.setMaxCount(10);
+            page.setSize(vo.getMaxCount());
+            if(null != vo.getCustName() && !"".equals(vo.getCustName())){
+                criteria.andCustNameLike("%" + vo.getCustName() + "%");
+            }
+            if(null != vo.getCustIndustry() && !"".equals(vo.getCustIndustry())){
+                criteria.andCustIndustryEqualTo(vo.getCustIndustry());
+            }
+
+            if(null != vo.getCustLevel() && !"".equals(vo.getCustLevel())){
+                criteria.andCustLevelEqualTo(vo.getCustLevel());
+            }
+            if(null != vo.getCustSource() && !"".equals(vo.getCustSource())){
+                criteria.andCustSourceEqualTo(vo.getCustSource());
+            }
+            page.setTotal(((Long)customerMapper.countByExample(customerExample)).intValue());
         }
-        if(condition.getCustIndustry() != null && condition.getCustIndustry() != ""){
-            criteria.andCustIndustryEqualTo(condition.getCustIndustry());
-        }
-        if(condition.getCustLevel() != null && condition.getCustLevel() != ""){
-            criteria.andCustLevelEqualTo(condition.getCustLevel());
-        }
-        return customerMapper.selectByExample(customerExample);
+        PageHelper.startPage(page.getPage() , page.getSize());
+        //逆向工程本身不支持分页操作 （与分页插件进行配合使用）
+        List<Customer> customerList = customerMapper.selectByExample(customerExample);
+        page.setRows(customerList);
+        return page;
+    }
+    /**
+     * 根据id获取客户信息
+     * @param id
+     * @return
+     */
+    @Override
+    public Customer getCustomerById(Long id) {
+        return customerMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 根据主键修改客户信息
+     * @param customer
+     * @return
+     */
+    @Override
+    public int customerUpdate(Customer customer) {
+        return customerMapper.updateByPrimaryKey(customer);
+    }
+
+    /**
+     * 根据主键删除客户信息
+     * @param id
+     * @return
+     */
+    @Override
+    public int customerDeleteById(Long id) {
+        return customerMapper.deleteByPrimaryKey(id);
     }
 }

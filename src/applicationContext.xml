@@ -35,6 +35,21 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
         <property name="configLocation" value="classpath:com/myProject/mybatis/sqlMapConfig.xml"></property>
+        <property name="plugins">
+            <array>
+                <!--配置分页插件-->
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <!--自动解析mysql语句-->
+                            <prop key="helperDialect">mysql</prop>
+                            <!--页面超出范围自动修正-->
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <bean id="configurer"  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
